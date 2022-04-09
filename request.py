@@ -24,5 +24,5 @@ for i in range(len(lista_snes)):
 
     Image_url = lista_imagens[1]
     im = Image.open(requests.get(Image_url, stream=True).raw)
-    im.save(r"imagens\\"+lista_snes[i]+".png")
+    im.save(r"imagens\\"+lista_snes[i].replace("+", " ")+".png")
 
