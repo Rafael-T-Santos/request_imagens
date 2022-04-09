@@ -1,0 +1,1 @@
+1- Coloque todas as roms nesta pasta
