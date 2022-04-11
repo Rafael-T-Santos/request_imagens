@@ -16,3 +16,12 @@ PySide6: Criação de interface gráfica
     * Coletar Imagens: Botão responsável por coletar as informações passadas anteriormente e fazer a consulta de imagens.
 
 A consulta salva a primeira imagem resultante da pesquisa da página do Google Imagens
+
+
+# Como Instalar ?
+
+*Efetuar o download do Python em https://www.python.org/downloads/ e instalar, lembrar de marcar a caixa "ADD Python to PATH"
+*Com o python instalado, efetuar o download dos arquivos Interface.py e requirements.txt
+*Abrir a pasta onde os arquivos se encontram segurar o SHIFT e clicar com o botão direito em uma area qualquer da pasta, nas opções que aparecerem clicar em "Abrir janela de comando aqui" ou "Abrir janela do PowerShell aqui", isso fará com que se abra uma janela de comando exatamente na pasta onde se encontram os arquivos.
+*Na janela de comando aberta digitar "pip install -r requirements.txt" sem as aspas, e pressionar ENTER, isso fará com que sejam instaladas as bibliotecas utilizadas no projeto.
+*Se todos os passos foram executados corretamente você já deve conseguir executar o arquivo Interface.py apenas dando dois cliques no mesmo.
