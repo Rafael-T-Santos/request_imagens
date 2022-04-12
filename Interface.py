@@ -13,6 +13,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from PIL import Image
+import xml.etree.ElementTree as ET 
 
 class Window(QWidget):
 
@@ -85,6 +86,7 @@ def getdata(url):
 
 def consulta_imagens():
     lista_roms = os.listdir(fname)
+    lista_xml = os.listdir(fname)
 
     for i in range(len(lista_roms)):
         lista_roms[i] = lista_roms[i].replace(" ", "+").replace('.zip', "")
@@ -101,7 +103,31 @@ def consulta_imagens():
 
         Image_url = lista_imagens[1]
         im = Image.open(requests.get(Image_url, stream=True).raw)
-        im.save(fname2+"\\"+lista_roms[i].replace("+", " ")+".png")
+        im.save(fname2+"\\"+lista_roms[i].replace("+", " ")+"-image"+".png")
+
+    cria_xml(lista_xml)
+
+def cria_xml(lista_xml):
+    gamelist = ET.Element('gameList')
+
+    for i in range(len(lista_xml)):
+        extensao = lista_xml[i][-4:]
+        nome_arquivo = lista_xml[i].replace(extensao, "")
+        game = ET.SubElement(gamelist, 'game') 
+        path = ET.SubElement(game, 'path') 
+        name = ET.SubElement(game, 'name') 
+        image = ET.SubElement(game, 'image')
+        lang = ET.SubElement(game, 'lang')
+        path.text = "./"+lista_xml[i]
+        name.text = nome_arquivo
+        image.text = "./images/"+nome_arquivo+"-image.png"
+        lang.text = "en"
+  
+    b_xml = ET.tostring(gamelist) 
+    with open(fname+"\\gamelist.xml", "wb") as f: 
+        f.write(b_xml)
+
+
 
 def executa():
     myApp = QApplication.instance()
@@ -111,6 +137,6 @@ def executa():
 
     janela = Window()
     janela.show()
-    myApp.exec_()
+    myApp.exec()
 
 executa()
