@@ -66,46 +66,60 @@ class Window(QWidget):
 
         self.pushButton = QPushButton('Coletar Imagens',self)
         self.pushButton.setGeometry(QRect(220, 160, 121, 24))
-        self.pushButton.clicked.connect(consulta_imagens)
+        self.pushButton.clicked.connect(self.consulta_imagens)
+
+        self.label4 = QLabel('Qt. Roms: ',self)
+        self.label4.setGeometry(QRect(30, 200, 50, 16))
+
+        self.lineEdit4 = QLineEdit(self)
+        self.lineEdit4.setGeometry(QRect(90, 200, 30, 16))
+        self.lineEdit4.setReadOnly(True)
+        self.lineEdit4.setStyleSheet('background-color: white;')
+
+        self.label5 = QLabel('Qt. Imgs: ',self)
+        self.label5.setGeometry(QRect(30, 220, 50, 16))
+
+        self.lineEdit5 = QLineEdit(self)
+        self.lineEdit5.setGeometry(QRect(90, 220, 30, 16))
+        self.lineEdit5.setReadOnly(True)
+        self.lineEdit5.setStyleSheet('background-color: white;')
 
     def browsefiles1(self):
         global fname
         fname = str(QFileDialog.getExistingDirectoryUrl(self))
         fname = fname.replace("PySide6.QtCore.QUrl('file:///", '').replace('/', '\\').replace("')", '')
         self.lineEdit1.setText(fname)
+        self.lineEdit4.setText(str(len(os.listdir(fname))))
 
     def browsefiles2(self):
         global fname2
         fname2 = str(QFileDialog.getExistingDirectory(self))
         fname2 = fname2.replace("PySide6.QtCore.QUrl('file:///", '').replace('/', '\\').replace("')", '')
         self.lineEdit2.setText(fname2)
+        self.lineEdit5.setText(str(len(os.listdir(fname2))))
 
-def getdata(url):
-    r = requests.get(url)
-    return r.text
+    def consulta_imagens(self):
+        lista_roms = os.listdir(fname)
+        lista_xml = os.listdir(fname)
 
-def consulta_imagens():
-    lista_roms = os.listdir(fname)
-    lista_xml = os.listdir(fname)
+        for i in range(len(lista_roms)):
+            lista_roms[i] = lista_roms[i].replace(" ", "+").replace('.zip', "")
 
-    for i in range(len(lista_roms)):
-        lista_roms[i] = lista_roms[i].replace(" ", "+").replace('.zip', "")
+        for i in range(len(lista_roms)):
+            lista_imagens = []
 
-    for i in range(len(lista_roms)):
-        jogo = lista_roms[i]
-        lista_imagens = []
+            htmldata = requests.get("https://www.google.com/search?q="+lista_roms[i]+"+snes&tbm=isch").text
+            soup = BeautifulSoup(htmldata, 'html.parser')
 
-        htmldata = getdata("https://www.google.com/search?q="+lista_roms[i]+"+snes&tbm=isch")
-        soup = BeautifulSoup(htmldata, 'html.parser')
+            for item in soup.find_all('img'):
+                lista_imagens.append(item['src'])
 
-        for item in soup.find_all('img'):
-            lista_imagens.append(item['src'])
-
-        Image_url = lista_imagens[1]
-        im = Image.open(requests.get(Image_url, stream=True).raw)
-        im.save(fname2+"\\"+lista_roms[i].replace("+", " ")+"-image"+".png")
-
-    cria_xml(lista_xml)
+            Image_url = lista_imagens[1]
+            im = Image.open(requests.get(Image_url, stream=True).raw)
+            im.save(fname2+"\\"+lista_roms[i].replace("+", " ")+"-image"+".png")
+            
+        self.lineEdit5.setText(str(len(os.listdir(fname2))))
+        cria_xml(lista_xml)        
 
 def cria_xml(lista_xml):
     gamelist = ET.Element('gameList')
@@ -126,8 +140,6 @@ def cria_xml(lista_xml):
     b_xml = ET.tostring(gamelist) 
     with open(fname+"\\gamelist.xml", "wb") as f: 
         f.write(b_xml)
-
-
 
 def executa():
     myApp = QApplication.instance()
