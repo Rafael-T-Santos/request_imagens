@@ -27,6 +27,11 @@ class Window(QWidget):
         self.setStyleSheet('background-color: #81CAB2;')
 
         self.set_form()
+        self.set_icon()
+
+    def set_icon(self):
+        appIcon = QIcon(r"img/icon.png")
+        self.setWindowIcon(appIcon)
 
     def set_form(self):
 
